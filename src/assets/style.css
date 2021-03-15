@@ -1,0 +1,16 @@
+:root {
+    --primary-background:  #27404E;
+    --secondary-background:  #4d7992;
+    
+
+    --orpheus-font: "trajan-pro-3", sans-serif;
+    --body-font: "Lato", serif;
+}
+
+body {
+    background-color: var(--primary-background);
+color: white;
+font-family: var(--body-font);
+font-weight: 700;
+}
+
