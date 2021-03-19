@@ -1,10 +1,10 @@
 <template>
-  <h1>This is a different component for now</h1>
+  <h1>This is a component for now</h1>
 </template>
 
 <script>
 export default {
-  name: "HelloDashboard",
+  name: "upcomingEvents",
   props: {
     msg: String,
   },
