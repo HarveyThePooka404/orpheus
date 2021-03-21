@@ -11,6 +11,12 @@
         </li>
         <li
           @click="changeActive($event), changeModule($event)"
+          id="createEvent"
+        >
+          Create Event
+        </li>
+        <li
+          @click="changeActive($event), changeModule($event)"
           id="upcomingEvents"
         >
           Upcoming Events
@@ -27,6 +33,7 @@
         <upcoming-events
           v-if="currentModule == 'upcomingEvents'"
         ></upcoming-events>
+        <create-event v-if="currentModule == 'createEvent'"></create-event>
       </div>
     </div>
   </div>
@@ -35,9 +42,10 @@
 <script>
 import createStory from "../components/createStory.vue";
 import upcomingEvents from "../components/upcomingEvents.vue";
+import createEvent from "../components/createEvent.vue";
 
 export default {
-  components: { createStory, upcomingEvents },
+  components: { createStory, upcomingEvents, createEvent },
 
   data: function () {
     return {
@@ -47,9 +55,7 @@ export default {
 
   methods: {
     changeModule(event) {
-      console.log(event.target.id);
       this.currentModule = event.target.id;
-      console.log(this.currentModule);
     },
 
     changeActive(event) {
@@ -68,15 +74,14 @@ export default {
 
 <style lang="css" scoped>
 .dashboard {
-  display: flex;
-  flex-flow: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 245px auto;
+  grid-template-rows: 1fr;
 }
 
 #menu {
-  position: fixed;
-  left: 20px;
   width: 200px;
+  padding-left: 1em;
 }
 
 #menu > h1 {
@@ -104,12 +109,8 @@ export default {
 }
 
 #modules {
-  padding: 2em;
-  position: fixed;
-  left: 250px;
-  top: 1%;
-  height: 98%;
-  width: 85vw;
+  padding: 1em;
+  grid-column: 2;
   background-color: white;
   border-radius: 50px 0 0 50px;
 }

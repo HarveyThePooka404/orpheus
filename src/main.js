@@ -10,6 +10,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyDevsd2GP8oN6yUEa3c73-tko50O2-McI4",
     authDomain: "vue-orpheus.firebaseapp.com",
     projectId: "vue-orpheus",
+    databaseURL: "https://vue-orpheus-default-rtdb.europe-west1.firebasedatabase.app/",
     storageBucket: "vue-orpheus.appspot.com",
     messagingSenderId: "952248085912",
     appId: "1:952248085912:web:2d3c69c90d5e46558bcfed"
@@ -17,4 +18,9 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig)
 
-createApp(App).use(router).mount('#app')
+
+const db = firebase.database();
+export { db };
+
+createApp(App).use(router).mount('#app');
+

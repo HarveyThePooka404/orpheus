@@ -1,7 +1,9 @@
 <template>
   <router-view />
   <div id="nav">
-    <router-link to="/">Home</router-link> |
+    <router-link to="/login" id="login-link">Login</router-link>/
+    <div id="#logout" @click="logout()">Logout</div>
+    | <router-link to="/help">Help</router-link> |
     <router-link to="/about">About</router-link>
   </div>
 </template>
@@ -12,19 +14,34 @@ import { useRouter, useRoute } from "vue-router";
 import firebase from "firebase";
 
 export default {
-  setup() {
-    const router = useRouter();
-    const route = useRoute();
+  mixins: [useRouter],
 
-    onBeforeMount(() => {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (!user) {
-          router.replace("/login");
-        } else if (route.path == "/login" || route.path == "/register") {
-          router.replace("/");
-        }
+  methods: {
+    //used to logout at any time
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(console.log("yep"))
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    setup() {
+      const router = useRouter();
+      const route = useRoute();
+
+      onBeforeMount(() => {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (!user) {
+            router.replace("/login");
+          } else if (route.path == "/login") {
+            router.replace("/");
+          }
+        });
       });
-    });
+    },
   },
 };
 </script>
@@ -39,15 +56,29 @@ h1 {
 }
 
 #app {
-  margin: 5vw;
+  background-color: transparent;
 }
 
 #nav {
   position: absolute;
-  bottom: 10px;
-  text-align: center;
+  width: 100%;
+  left: 0;
+  bottom: 30px;
+  font-size: 1.2em;
+  display: flex;
+  justify-content: space-around;
+  max-width: 600px;
 }
 #nav > a {
   color: white;
+}
+
+#\#logout {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#login-link {
+  align-self: right;
 }
 </style>

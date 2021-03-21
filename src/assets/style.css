@@ -1,6 +1,7 @@
 :root {
-    --primary-background:  #27404E;
-    --secondary-background:  #4d7992;
+    --primary-background:  #2D112C;
+    --dark-orange:  #ac3916;
+    --bright-orange: #D87034;
     
 
     --orpheus-font: "trajan-pro-3", sans-serif;
@@ -9,8 +10,9 @@
 
 body {
     background-color: var(--primary-background);
-color: white;
+        color: white;
 font-family: var(--body-font);
 font-weight: 700;
+margin:0;
 }
 

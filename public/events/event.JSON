@@ -1,0 +1,24 @@
+{
+    "events": [
+        {
+            "fulldate": "string",
+            "id": "0",
+            "day": "04",
+            "month": "september",
+            "hour": "18:00",
+            "titleEvent": "8e Cercle",
+            "placeEvent": "Jardin du Luxembourg",
+            "numberAttending": "20"
+        },
+        {
+            "fulldate": "string",
+            "id": "1",
+            "day": "23",
+            "month": "mars",
+            "hour": "16:30",
+            "titleEvent": "Faust: Only Satan can judge me",
+            "placeEvent": "Musée de la Chasse",
+            "numberAttending": "6"
+        }
+    ]
+}

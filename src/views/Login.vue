@@ -22,7 +22,6 @@ import image from "../assets/images/Lyra.png";
 export default {
   data: function () {
     return {
-      user: firebase.auth().currentUser,
       image: image,
     };
   },
@@ -31,13 +30,11 @@ export default {
     const email = ref("");
     const password = ref("");
 
-    const isLogged = firebase.auth().currentUser;
-
     const Login = () => {
       firebase
         .auth()
         .signInWithEmailAndPassword(email.value, password.value)
-        .then(console.log(isLogged))
+        .then(console.log("loggedin"))
         .catch((err) => alert(err.message));
     };
 
@@ -45,7 +42,6 @@ export default {
       Login,
       email,
       password,
-      isLogged,
     };
   },
 };
