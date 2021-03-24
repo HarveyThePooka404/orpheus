@@ -4,33 +4,13 @@
       <h1 class="first-title">Select an Event</h1>
       <button class="new-event add-button">+</button>
       <div class="existing-event">
-        <template v-for="events in events" :key="events">
-          <div class="event" @click="selectEvent($event)">
-            <p class="id-event">{{ events.id }}</p>
-            <div class="date">
-              <span class="day"> {{ events.day }}</span>
-              <span class="month">{{ events.month }}</span>
-              <span class="hour"> {{ events.hour }}</span>
-            </div>
-            <div class="info-event">
-              <h2 class="title-event">{{ events.titleEvent }}</h2>
-              <p class="place-event">{{ events.placeEvent }}</p>
-
-              <p class="people-attending">
-                <span class="number-attending">
-                  {{ events.numberAttending }}
-                </span>
-                attending
-              </p>
-            </div>
-          </div>
-        </template>
+        <get-event></get-event>
       </div>
     </div>
 
     <div class="right">
       <h1 class="first-title" v-if="action == 'create'">Create a new event</h1>
-      <h1 class="first-title" v-else>Edit an existing event</h1>
+      <h1 class="first-title" v-else>Edit a scheduled event</h1>
       <form action="">
         <div class="dateEvent labelInput">
           <label for="date-event">Date of the Event</label>
@@ -71,9 +51,7 @@
         Create event
       </button>
       <div class="wrapper-delete" v-else>
-        <button id="buttonSubmitEvent" @click="createNewEvent">
-          Edit event
-        </button>
+        <button id="buttonSubmitEvent" @click="editEvent">Edit event</button>
         <img src="../assets/images/bin.png" alt="delete icon" />
       </div>
     </div>
@@ -111,19 +89,23 @@ export default {
 
     displayEvent(data) {
       //sets up data and selector
-      this.action = "edit";
-
       let date = document.querySelector("#date-event");
       let dayServer = new Date(data.fulldate);
 
       //chops up the date to fit a fucking format no one undertands
       let yearServer = dayServer.getFullYear();
-      let monthServer = ("0" + dayServer.getMonth()).slice(-2);
-      let dayFormattedServer = ("0" + dayServer.getDate()).slice(-2);
+      let monthServer = ("0" + (dayServer.getMonth() + 1)).slice(-2);
+      let monthServerNumber = parseInt(monthServer);
+      let dayFormattedServer = parseInt(("0" + dayServer.getDate()).slice(-2));
 
       //changes form value
-      let dayFormatted = `${yearServer}-${monthServer}-${dayFormattedServer}`;
+      console.log(yearServer);
+      console.log(monthServer);
+      console.log(dayFormattedServer);
+
+      let dayFormatted = `${yearServer}-${monthServerNumber}-${dayFormattedServer}`;
       date.value = dayFormatted;
+      console.log(typeof date.value);
 
       // same for hour
       let hour = document.querySelector("#hour-event");
@@ -142,11 +124,8 @@ export default {
     },
 
     editEvent() {
-      this.editDBevent(this.createEvent(), this.idEvent);
-    },
-
-    editDBevent(editedEvent, idEvent) {
-      console.log(editedEvent, idEvent);
+      let activeEventId = document.querySelector(".active .id-event").innerHTML;
+      db.ref("events/" + activeEventId).update(this.createEvent());
     },
 
     createEvent() {
@@ -164,7 +143,6 @@ export default {
       let minutes = hours.charAt(3) + hours.charAt(4);
 
       d.setHours(hour, minutes);
-      console.log(d);
 
       const monthNames = [
         "January",
@@ -244,7 +222,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="css">
 #createEvent {
   display: grid;
