@@ -4,13 +4,16 @@
     --bright-orange: #D87034;
     
 
-    --orpheus-font: "trajan-pro-3", sans-serif;
+    --orpheus-font: "Canter", sans-serif;
     --body-font: "Lato", serif;
 }
 
+@font-face {
+    font-family: "Canter";
+    src: url("");
+    }
+
 body {
-    background-color: var(--primary-background);
-        color: white;
 font-family: var(--body-font);
 font-weight: 700;
 margin:0;

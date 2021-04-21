@@ -9,10 +9,7 @@
         >
           Create Story
         </li>
-        <li
-          @click="changeActive($event), changeModule($event)"
-          id="createEvent"
-        >
+        <li @click="changeActive($event), changeModule($event)" id="Event">
           Create Event
         </li>
         <li
@@ -33,7 +30,10 @@
         <upcoming-events
           v-if="currentModule == 'upcomingEvents'"
         ></upcoming-events>
-        <create-event v-if="currentModule == 'createEvent'"></create-event>
+        <event
+          :currentModule="currentModule"
+          v-if="currentModule == 'Event'"
+        ></event>
       </div>
     </div>
   </div>
@@ -42,10 +42,10 @@
 <script>
 import createStory from "../components/createStory.vue";
 import upcomingEvents from "../components/upcomingEvents.vue";
-import createEvent from "../components/createEvent.vue";
+import Event from "./pages/Event.vue";
 
 export default {
-  components: { createStory, upcomingEvents, createEvent },
+  components: { createStory, upcomingEvents, Event },
 
   data: function () {
     return {

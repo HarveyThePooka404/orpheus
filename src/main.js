@@ -4,7 +4,7 @@ import router from './router'
 import firebase from "firebase"
 import { firestorePlugin } from 'vuefire'
 import './assets/style.css'
-
+import store from './store/store.js'
 
 const firebaseConfig = {
     apiKey: "AIzaSyDevsd2GP8oN6yUEa3c73-tko50O2-McI4",
@@ -17,9 +17,14 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const db = firebase.firestore();
+const storage = firebase.storage();
 
-export { db };
+export { db, storage, store }
 
-createApp(App).use(router, firestorePlugin).mount('#app');
+const app = createApp(App);
+app.use(router, firestorePlugin);
+app.use(store);
+app.mount('#app');
+
 

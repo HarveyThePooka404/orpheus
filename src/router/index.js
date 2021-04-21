@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-  
+
 const routes = [
   {
     path: '/',
@@ -24,11 +24,20 @@ const routes = [
     path: "/help",
     name: "Help",
     component: () => import("../views/Help.vue")
-  }
+  },
+  {
+    path: "/events/:firestoreId/:usermail",
+    name: "Böme",
+    component: () => import("../views/Live.vue")
+  },
+
 
 ]
 
 const router = createRouter({
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/'
+    : '/',
   history: createWebHistory(process.env.BASE_URL),
   routes
 })

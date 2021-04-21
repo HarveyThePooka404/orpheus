@@ -1,11 +1,5 @@
 <template>
   <router-view />
-  <div id="nav">
-    <router-link to="/login" id="login-link">Login</router-link>/
-    <div id="#logout" @click="logout()">Logout</div>
-    | <router-link to="/help">Help</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
 </template>
 
 <script>
