@@ -1,24 +1,25 @@
 <template>
   <div class="liveEvent">
-    <h1>Name of the story: {{ liveEvent.titleEvent }}</h1>
+    <h1>{{ liveEvent.titleEvent }}</h1>
+    <div class="wrapper-event">
+      <p>
+        L'événement commence dans <br /><span>{{ days }}</span> jours,
+        <span>{{ hours }}</span> heures, <span>{{ minutes }}</span> minutes,
+        <span>{{ seconds }}</span> secondes
+      </p>
 
-    <p>
-      Your event will start in {{ days }} days, {{ hours }} hours,
-      {{ minutes }} minutes, {{ seconds }} seconds
-    </p>
-    <p>Today, you will play as {{ liveUser.storyline }}</p>
-
-    <audio controls preload="none" id="lecteur" loop>
-      <source src="" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-
-    <div class="button-wrapper">
-      <button @click="playAudio()">Play audio</button>
-      <button @click="stopAudio()">Stop audio</button>
+      <audio controls preload="none" id="lecteur" loop>
+        <source src="" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
     </div>
 
-    <p>fallback listener: <a :href="waitURL">click here</a></p>
+    <a @click="playAudio()">
+      <span> Commencer</span>
+      <div class="liquid"></div>
+    </a>
+
+    <!-- <button @click="stopAudio()">Stop audio</button> -->
   </div>
 </template>
 
@@ -217,27 +218,42 @@ export default {
 
 <style lang="css" scoped>
 .liveEvent {
-  padding: 2em;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+
+  height: 100vh;
+  background: linear-gradient(
+    rgba(5, 16, 41, 1) 50%,
+    rgba(255, 255, 255, 1) 100%
+  );
+}
+
+.wrapper-event {
+  padding: 0 2em;
+  align-self: center;
 }
 
 h1 {
-  font-size: 1em;
+  text-align: center;
+  margin: 0;
+  font-size: 6em;
+  color: white;
+}
+
+p {
+  text-align: center;
+  color: white;
+}
+
+p span {
+  font-weight: 400;
+  font-size: 1.5em;
 }
 
 audio {
   display: none;
 }
 
-.button-wrapper {
-  display: flex;
-  flex-flow: column;
-}
-
-.button-wrapper button {
-  margin: 2em 0;
-  color: white;
-  background-color: var(--bright-orange);
-  border: none;
-  height: 50px;
-}
+/* button for the liquid button => from: https://codepen.io/fliseno1k/pen/WNboLBy */
 </style>

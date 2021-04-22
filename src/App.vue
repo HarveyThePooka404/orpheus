@@ -49,10 +49,6 @@ h1 {
   font-weight: 300;
 }
 
-#app {
-  background-color: transparent;
-}
-
 #nav {
   position: absolute;
   width: 100%;
