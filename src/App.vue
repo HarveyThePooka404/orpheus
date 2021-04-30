@@ -16,7 +16,6 @@ export default {
       firebase
         .auth()
         .signOut()
-        .then(console.log("yep"))
         .catch((error) => {
           console.log(error);
         });

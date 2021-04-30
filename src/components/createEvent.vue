@@ -1,50 +1,53 @@
 <template>
-  <form action="" id="createEventForm">
-    <div class="dateEvent labelInput">
-      <label for="date-event">Date of the Event</label>
-      <input type="date" id="date-event" name="date-event" />
-    </div>
+  <div class="wrapper-right">
+    <form action="" id="createEventForm">
+      <div class="dateEvent labelInput">
+        <label for="date-event">Date of the Event</label>
+        <input type="date" id="date-event" name="date-event" />
+      </div>
 
-    <div class="hourEvent labelInput">
-      <label for="hour-event">Time of the Event</label>
-      <input type="time" id="hour-event" name="hour-event" />
-    </div>
+      <div class="hourEvent labelInput">
+        <label for="hour-event">Time of the Event</label>
+        <input type="time" id="hour-event" name="hour-event" />
+      </div>
 
-    <div class="placeEvent labelInput">
-      <label for="place-event">Where?</label>
-      <input type="textarea" id="place-event" name="place-event" />
-    </div>
+      <div class="placeEvent labelInput">
+        <label for="place-event">Where?</label>
+        <input type="textarea" id="place-event" name="place-event" />
+      </div>
 
-    <div class="storyEvent labelInput">
-      <label for="story-event">Which story to use?</label>
-      <select id="story-event" name="story-event">
-        <option value="Lesson">Lesson</option>
-        <option value="Something Else">Something Else</option>
-        <option value="A cool name">A cool name</option>
-        <option value="Divided by Iceberg">Divided by Iceberg</option>
-      </select>
-    </div>
+      <div class="storyEvent labelInput">
+        <label for="story-event">Which story to use?</label>
+        <select id="story-event" name="story-event">
+          <option value="Lesson">Lesson</option>
+          <option value="Something Else">Something Else</option>
+          <option value="A cool name">A cool name</option>
+          <option value="Divided by Iceberg">Divided by Iceberg</option>
+        </select>
+      </div>
 
-    <div class="paxEvent labelInput">
-      <label for="pax-event">How many participants?</label>
-      <input type="number" id="pax-event" name="pax-event" />
-    </div>
-  </form>
+      <div class="paxEvent labelInput">
+        <label for="pax-event">How many participants?</label>
+        <input type="number" id="pax-event" name="pax-event" />
+      </div>
+    </form>
 
-  <button
-    id="buttonSubmitEvent"
-    @click="createEvent"
-    v-if="actionEvent == 'create'"
-  >
-    Create event
-  </button>
-  <div class="wrapper-delete" v-else>
-    <button id="buttonSubmitEvent" @click="createEvent">Edit event</button>
-    <img
-      src="../assets/images/bin.png"
-      alt="delete icon"
-      @click="deleteEvent"
-    />
+    <button
+      id="buttonSubmitEvent"
+      @click="createEvent"
+      v-if="actionEvent === 'create'"
+    >
+      Create event
+    </button>
+    <div class="wrapper-delete" v-else>
+      <button id="buttonSubmitEvent" @click="createEvent">Edit event</button>
+      <img
+        class="bin"
+        src="../assets/images/bin.png"
+        alt="delete icon"
+        @click="deleteEvent"
+      />
+    </div>
   </div>
 </template>
 
@@ -75,22 +78,23 @@ export default {
     const store = useStore();
 
     return {
-      events: computed(() => store.state.events),
+      events: computed(() => store.getters.getEvents),
+      actionEvent: computed(() => store.getters.getActionFirestore),
       firestoreid: computed(() => store.state.firestoreid),
-      actionEvent: computed(() => store.state.actionEvent),
     };
   },
 
   created() {
-    this.$store.subscribe((mutation, state) => {
+    this.$store.commit("changeCurrentModule", "Event");
+    this.$store.subscribe((mutation) => {
       if (
         mutation.type === "editEventID" &&
         mutation.payload != null &&
-        this.currentModule === "Event"
+        this.$store.getters.getCurrentModule === "Event"
       ) {
-        console.log(state);
         //state is the editEventid and not impacting events
         this.displayEvent(this.$store.getters.matchingEvent);
+        console.log(this.$store.getters.matchingEvent.id);
       }
     });
   },
@@ -102,7 +106,6 @@ export default {
       const paxEvent = document.querySelector("#pax-event").value;
       const hours = document.querySelector("#hour-event").value;
       const title = document.querySelector("#story-event").value;
-      console.log(title);
 
       let d = new Date(input);
       let month = d.getMonth();
@@ -166,22 +169,14 @@ export default {
       }
     },
 
-    getEventFirestore(id) {
+    /*     getEventFirestore(id) {
       db.collection("events")
         .doc(id)
         .get()
-        .then((doc) => {
-          if (doc.exists) {
-            console.log(doc.id);
-            console.log("Document data: ", doc.data());
-          } else {
-            console.log("No such document");
-          }
-        })
         .catch((error) => {
           console.log("Error getting document: ", error);
         });
-    },
+    }, */
 
     displayEvent(data) {
       //sets up data and selector
@@ -191,7 +186,6 @@ export default {
       let month = ("0" + (dateServer.getMonth() + 1)).slice(-2);
       let day = ("0" + dateServer.getDate()).slice(-2);
       let year = dateServer.getFullYear();
-      console.log(year, month, day);
 
       date.value = `${year}-${month}-${day}`;
       //change date to fit input
@@ -209,7 +203,6 @@ export default {
       //same for story
       const story = document.querySelector("#story-event");
       let titleServer = data.titleEvent;
-      console.log(titleServer);
       story.value = titleServer;
 
       //finally doing it for the pax
@@ -218,18 +211,12 @@ export default {
       pax.value = paxServer;
     },
 
-    deleteEvent() {
+    async deleteEvent() {
       //delete from Firestore storage
-      db.collection("events")
-        .doc(this.firestoreid)
-        .delete()
-        .then(() => {
-          console.log("document deleted from Firestore");
-        });
+      await this.$store.dispatch("deleteEventfromFirestore", this.firestoreid);
 
-      //delete from Events store
-      this.$store.commit("DELETE_EVENT", this.firestoreid);
-
+      console.log(this.$store.getters.getEvents);
+      console.log(this.events);
       //reset forms after displaying events
       document.querySelector("#createEventForm").reset();
     },
@@ -251,7 +238,7 @@ export default {
 }
 
 #buttonSubmitEvent {
-  background-color: var(--dark-orange);
+  background-color: #051029;
   color: white;
   border: none;
   margin: 50px 0;
@@ -259,6 +246,10 @@ export default {
   padding: 0.5em;
   cursor: pointer;
   max-height: 75px;
+}
+
+#buttonSubmitEvent:hover {
+  transform: scale(1.1);
 }
 
 .wrapper-delete {
@@ -270,5 +261,10 @@ export default {
 
 .wrapper-delete img {
   max-height: 50px;
+  cursor: pointer;
+}
+
+.wrapper-delete img:hover {
+  transform: scale(1.1);
 }
 </style>

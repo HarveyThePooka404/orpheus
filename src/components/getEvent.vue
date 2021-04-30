@@ -1,40 +1,39 @@
 
 <template>
-  <div
-    :id="events.id"
-    v-for="events in events"
-    :key="events"
-    class="event"
-    @click="selectEvent($event)"
-  >
-    <div class="date">
-      <span class="day"> {{ events.day }}</span>
-      <span class="month">{{ events.month }}</span>
-      <span class="hour"> {{ events.hour }}</span>
-    </div>
-    <div class="info-event">
-      <h2 class="title-event">{{ events.titleEvent }}</h2>
-      <p class="place-event">{{ events.placeEvent }}</p>
+  <div class="wrapper" v-if="data">
+    <div
+      :id="event.id"
+      v-for="event in events"
+      :key="event.id"
+      class="event"
+      @click="selectEvent($event)"
+    >
+      <div class="date">
+        <span class="day"> {{ event.day }}</span>
+        <span class="month">{{ event.month }}</span>
+        <span class="hour"> {{ event.hour }}</span>
+      </div>
+      <div class="info-event">
+        <h2 class="title-event">{{ event.titleEvent }}</h2>
+        <p class="place-event">{{ event.placeEvent }}</p>
 
-      <p class="people-attending">
-        <span class="number-attending">
-          {{ events.numberAttending }}
-        </span>
-        attending
-      </p>
+        <p class="people-attending">
+          <span class="number-attending">
+            {{ event.numberAttending }}
+          </span>
+          tickets
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { db } from "../main.js";
-import { computed } from "vue";
-import { useStore } from "vuex";
-
 export default {
   methods: {
     selectEvent(clicked) {
       let clickedEvent = clicked.currentTarget;
+      console.log(clickedEvent);
 
       // checks if the clicked event was already active
       if (clickedEvent.classList.contains("active")) {
@@ -51,35 +50,28 @@ export default {
         clickedEvent.classList.add("active");
 
         let clickedId = clickedEvent.id;
-
         this.$store.commit("actionEventChange", "edit");
         this.$store.commit("editEventID", clickedId);
       }
     },
   },
 
-  setup() {
-    const store = useStore();
-
+  data() {
     return {
-      events: computed(() => store.state.events),
-      firestoreid: computed(() => store.state.firestoreid),
-      actionEvent: computed(() => store.state.actionEvent),
+      data: false,
     };
   },
 
-  created: function () {
-    db.collection("events")
-      .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
-          let item = doc.data();
-          item.id = doc.id;
-          this.events.push(item);
-        });
-      });
+  computed: {
+    events() {
+      return this.$store.getters.getEvents;
+    },
   },
 
+  async created() {
+    await this.$store.dispatch("bindEventsfromFirestore");
+    this.data = true;
+  },
 };
 </script>
 
@@ -99,9 +91,10 @@ export default {
 }
 
 .date {
+  color: white;
   display: flex;
   flex-flow: column;
-  background-color: var(--primary-background);
+  background-color: #051029;
   border-radius: 30px 0 0 30px;
   padding: 0.5em;
 }
@@ -151,7 +144,7 @@ export default {
 }
 
 .active .info-event {
-  background-color: var(--primary-background);
+  background-color: #051029;
   border-radius: 0 25px 25px 0;
 }
 

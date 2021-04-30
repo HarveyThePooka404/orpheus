@@ -18,9 +18,6 @@
         >
           Upcoming Events
         </li>
-        <li @click="changeActive($event)" id="pastEvents">Past Events</li>
-        <li @click="changeActive($event)" id="calendar">Calendar</li>
-        <li @click="changeActive($event)" id="settings">Settings</li>
       </ul>
     </div>
 
@@ -80,13 +77,17 @@ export default {
 }
 
 #menu {
-  width: 200px;
+  width: 120%;
+  color: white;
+  font-weight: bold;
+  background-color: #314675;
+  min-height: 100vh;
+  height: 100%;
   padding-left: 1em;
 }
 
 #menu > h1 {
-  text-align: center;
-  font-size: 2.8em;
+  font-size: 4em;
 }
 .features {
   list-style-type: none;
@@ -95,17 +96,17 @@ export default {
 
 .features > li {
   cursor: pointer;
-  margin: 30px 0;
-  width: 103%;
+  margin: 40px 0;
+  width: 68%;
   font-size: 1.3em;
 }
 
 .active,
 .features > li:hover {
-  color: var(--bright-orange);
   transform: scale(1.1);
   transform-origin: bottom left;
-  border-right: solid 5px var(--bright-orange);
+  color: #051029;
+  border-right: solid 5px #051029;
 }
 
 #modules {

@@ -4,7 +4,7 @@
       <h1 class="first-title">Select an Event</h1>
       <button class="new-event add-button" @click="setToCreate">+</button>
       <div class="existing-event">
-        <get-event currentModule='Event'></get-event>
+        <get-event currentModule="Event"></get-event>
       </div>
     </div>
 
@@ -13,7 +13,7 @@
         Create a new event
       </h1>
       <h1 class="first-title" v-else>Edit a scheduled event</h1>
-      <create-event></create-event>
+      <create-event currentModule="Event"></create-event>
     </div>
   </div>
 </template>
@@ -60,7 +60,7 @@ export default {
 <style scoped lang="css">
 #Event {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 1fr;
 }
 
 .left,
@@ -68,6 +68,10 @@ export default {
   grid-template-rows: 80px auto;
   justify-self: center;
   display: grid;
+}
+
+.left {
+  padding: 0 1em;
 }
 
 label {
@@ -122,10 +126,7 @@ p {
 }
 
 .existing-event {
-  overflow-y: scroll;
-  overflow-x: auto;
   padding: 0 1em;
-  height: 60vh;
 }
 
 .existing-event::-webkit-scrollbar {
