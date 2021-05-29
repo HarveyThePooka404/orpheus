@@ -29,11 +29,12 @@
 </template>
 
 <script>
+import { computed } from "vue";
+import { useStore } from "vuex";
 export default {
   methods: {
     selectEvent(clicked) {
       let clickedEvent = clicked.currentTarget;
-      console.log(clickedEvent);
 
       // checks if the clicked event was already active
       if (clickedEvent.classList.contains("active")) {
@@ -57,20 +58,19 @@ export default {
   },
 
   data() {
+    const store = useStore();
+
     return {
-      data: false,
+      data: computed(() => store.getters.getData),
+      events: computed(() => store.getters.getEvents),
     };
   },
 
-  computed: {
-    events() {
-      return this.$store.getters.getEvents;
-    },
-  },
-
   async created() {
+    this.$store.commit("changeDataStatus", false);
+
     await this.$store.dispatch("bindEventsfromFirestore");
-    this.data = true;
+    this.$store.commit("changeDataStatus", true);
   },
 };
 </script>

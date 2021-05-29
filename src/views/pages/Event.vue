@@ -45,6 +45,8 @@ export default {
       allEvents.forEach(function (event) {
         event.classList.remove("active");
       });
+
+      document.querySelector("#date-event").focus();
     },
   },
   setup() {

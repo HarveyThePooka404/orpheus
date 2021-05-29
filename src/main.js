@@ -6,6 +6,8 @@ import { firestorePlugin } from 'vuefire'
 import './assets/style.css'
 import store from './store/store.js'
 
+
+
 const firebaseConfig = {
     apiKey: "AIzaSyDevsd2GP8oN6yUEa3c73-tko50O2-McI4",
     authDomain: "vue-orpheus.firebaseapp.com",

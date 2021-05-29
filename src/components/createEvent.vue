@@ -18,12 +18,14 @@
 
       <div class="storyEvent labelInput">
         <label for="story-event">Which story to use?</label>
-        <select id="story-event" name="story-event">
-          <option value="Lesson">Lesson</option>
-          <option value="Something Else">Something Else</option>
-          <option value="A cool name">A cool name</option>
-          <option value="Divided by Iceberg">Divided by Iceberg</option>
-        </select>
+
+        <div v-if="dataOptions">
+          <select :value="value" id="story-event">
+            <option v-for="story in stories" v-bind:key="story.title">
+              {{ story.title }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <div class="paxEvent labelInput">
@@ -74,17 +76,23 @@ const monthNames = [
 export default {
   props: ["currentModule"],
 
-  setup() {
+  data() {
     const store = useStore();
 
     return {
       events: computed(() => store.getters.getEvents),
       actionEvent: computed(() => store.getters.getActionFirestore),
       firestoreid: computed(() => store.state.firestoreid),
+      stories: computed(() => store.getters.getStories),
+      dataOptions: computed(() => store.getters.getDataOptions),
+      value: "",
     };
   },
 
-  created() {
+  async created() {
+    this.$store.commit("changeDataOptions", false);
+    await this.$store.dispatch("bindStoriesfromFirestore");
+    console.log(this.test);
     this.$store.commit("changeCurrentModule", "Event");
     this.$store.subscribe((mutation) => {
       if (
@@ -94,13 +102,14 @@ export default {
       ) {
         //state is the editEventid and not impacting events
         this.displayEvent(this.$store.getters.matchingEvent);
-        console.log(this.$store.getters.matchingEvent.id);
       }
     });
+    this.$store.commit("changeDataOptions", true);
   },
 
   methods: {
-    createEvent() {
+    async createEvent() {
+      this.$store.commit("changeDataStatus", false);
       const input = document.querySelector("#date-event").value;
       const placeEvent = document.querySelector("#place-event").value;
       const paxEvent = document.querySelector("#pax-event").value;
@@ -117,22 +126,10 @@ export default {
 
       let monthCartouche = monthNames[month];
 
-      let createdEvent = {
-        fulldate: d,
-        day: day,
-        hour: hour + ":" + minutes,
-        month: monthCartouche,
-        numberAttending: paxEvent,
-        placeEvent: placeEvent,
-        titleEvent: title,
-      };
-
       if (this.actionEvent === "create") {
-        //add to store for immediat re-render
-        this.$store.commit("addNewEvent", createdEvent);
-
+        console.log(title);
         //adds to server
-        db.collection("events").add({
+        await db.collection("events").add({
           fulldate: d,
           day: day,
           hour: hour + ":" + minutes,
@@ -141,6 +138,9 @@ export default {
           placeEvent: placeEvent,
           titleEvent: title,
         });
+
+        this.$store.commit("changeDataStatus", true);
+        document.querySelector("#createEventForm").reset();
       } else if (this.actionEvent === "edit") {
         //update event in the store
         this.$store.getters.matchingEvent.fulldate = d;
@@ -166,17 +166,10 @@ export default {
           .then(() => {
             console.log("updated document in firestore");
           });
+
+        this.$store.commit("changeDataStatus", true);
       }
     },
-
-    /*     getEventFirestore(id) {
-      db.collection("events")
-        .doc(id)
-        .get()
-        .catch((error) => {
-          console.log("Error getting document: ", error);
-        });
-    }, */
 
     displayEvent(data) {
       //sets up data and selector
@@ -213,12 +206,13 @@ export default {
 
     async deleteEvent() {
       //delete from Firestore storage
+      this.$store.commit("changeDataStatus", false);
       await this.$store.dispatch("deleteEventfromFirestore", this.firestoreid);
 
-      console.log(this.$store.getters.getEvents);
-      console.log(this.events);
       //reset forms after displaying events
       document.querySelector("#createEventForm").reset();
+      this.$store.commit("actionEventChange", "create");
+      console.log(this.$store.state.events);
     },
   },
 };

@@ -25,12 +25,12 @@ margin:0;
 
 
 
-a {
+#button {
     position: absolute;
     align-self: center;
     bottom: 50px;
     padding: 20px 50px;
-    display: block;
+    display: flex;
     text-decoration: none;
     text-transform: uppercase;
     width: 200px;
@@ -39,16 +39,18 @@ a {
     cursor: pointer;
   }
   
-  a span {
+  #button span {
+    width: 100%;
+    text-align: center;
     position: relative;
     color: #fff;
-    fot-size: 20px;
+    font-size: 20px;
     font-family: Arial;
     letter-spacing: 8px;
     z-index: 1;
   }
   
-  a .liquid {
+  #button .liquid {
     position: absolute;
     top: -110px;
     left: 0;
@@ -61,8 +63,8 @@ a {
     transition: .5s;
   }
   
-  a .liquid::after,
-  a .liquid::before {
+  #button .liquid::after,
+  #button .liquid::before {
     content: '';
     width: 200%;
     height: 200%;
@@ -73,22 +75,28 @@ a {
     background: #000;
   }
   
-  a .liquid::before {
+  #button .liquid::before {
     
     border-radius: 45%;
     background: rgba(20, 20, 20, 1);
     animation: animate 5s linear infinite;
   }
   
-  a .liquid::after {
+  #button .liquid::after {
     
     border-radius: 40%;
     background: rgba(20, 20, 20, .5);
     animation: animate 10s linear infinite;
   }
   
-  a:hover .liquid{
-    top: -120px;
+  #button:hover .liquid {
+    top: -220px;
+    background-color:  #314675;
+  }
+
+  .isReading  {
+      top: -220px !important;
+      background-color:  #314675;
   }
   
   @keyframes animate {

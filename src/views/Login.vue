@@ -18,12 +18,23 @@
 import { ref } from "vue";
 import firebase from "firebase";
 import image from "../assets/images/Lyra.png";
+import store from "@/store/store.js";
 
 export default {
   data: function () {
     return {
       image: image,
+      store: store,
     };
+  },
+
+  created() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.$store.commit("logUserIn", true);
+        this.$router.push({ name: "Dashboard" });
+      }
+    });
   },
 
   setup() {
@@ -34,7 +45,7 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(email.value, password.value)
-        .then(console.log("loggedin"))
+        .then(console.log("logged"))
         .catch((err) => alert(err.message));
     };
 
@@ -77,19 +88,19 @@ h1 {
 .login > form > input[type="text"],
 .login > form > input[type="password"] {
   background-color: transparent;
-  color: white;
-  border-bottom: solid 1px white;
+  border-bottom: solid 1px #051029;
 }
 
 .login > form > input::placeholder {
-  color: white;
+  color: #314675;
   font-family: "Lato", sans-serif;
 }
 
 .login > form > input[type="submit"] {
-  margin-top: 2em;
+  margin-top: 1em;
   min-height: 60px;
-  background-color: var(--dark-orange);
+  border-radius: 10px;
+  background-color: #314675;
   color: white;
   font-family: "Lato", sans-serif;
 }

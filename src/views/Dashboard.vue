@@ -3,10 +3,7 @@
     <div id="menu">
       <h1>Orpheus</h1>
       <ul class="features">
-        <li
-          @click="changeActive($event), changeModule($event)"
-          id="createStory"
-        >
+        <li @click="changeActive($event), changeModule($event)" id="Stories">
           Create Story
         </li>
         <li @click="changeActive($event), changeModule($event)" id="Event">
@@ -19,11 +16,12 @@
           Upcoming Events
         </li>
       </ul>
+
+      <span id="logoutButton" @click="logout()">logout</span>
     </div>
 
     <div id="modules">
       <div id="#components-demo">
-        <create-story v-if="currentModule == 'createStory'"></create-story>
         <upcoming-events
           v-if="currentModule == 'upcomingEvents'"
         ></upcoming-events>
@@ -31,23 +29,35 @@
           :currentModule="currentModule"
           v-if="currentModule == 'Event'"
         ></event>
+
+        <stories
+          :currentModule="Stories"
+          v-if="currentModule == 'Stories'"
+        ></stories>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import createStory from "../components/createStory.vue";
 import upcomingEvents from "../components/upcomingEvents.vue";
 import Event from "./pages/Event.vue";
+import Stories from "./pages/Stories.vue";
+import firebase from "firebase";
 
 export default {
-  components: { createStory, upcomingEvents, Event },
+  components: { upcomingEvents, Event, Stories },
 
   data: function () {
     return {
-      currentModule: "createStory",
+      currentModule: "Stories",
     };
+  },
+
+  beforeCreate() {
+    if (!this.$store.state.isLogged) {
+      this.$router.push({ name: "Login" });
+    }
   },
 
   methods: {
@@ -64,6 +74,19 @@ export default {
       });
 
       event.target.classList.add("active");
+    },
+
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(
+          this.$store.commit("logUserIn", false),
+          this.$router.push({ name: "Login" })
+        )
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
@@ -118,5 +141,15 @@ export default {
 
 #nav {
   display: none;
+}
+
+#logoutButton {
+  position: absolute;
+  bottom: 20px;
+  cursor: pointer;
+}
+
+#logoutButton:hover {
+  transform: scale(1.1);
 }
 </style>

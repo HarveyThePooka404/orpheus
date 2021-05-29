@@ -14,8 +14,12 @@
       </audio>
     </div>
 
-    <a @click="playAudio()">
-      <span> Commencer</span>
+    <a id="button" @click="playAudio()">
+      <span v-if="!isReading && !isLive"> Essayer </span>
+      <span v-if="!isReading && isLive"> Commencer </span>
+      <span v-if="isReading && !isLive"> Stop </span>
+      <span v-if="isReading && isLive"> Live </span>
+
       <div class="liquid"></div>
     </a>
 
@@ -44,25 +48,39 @@ export default {
       startfrom: 0,
 
       isLive: false,
+      isReading: false,
     };
   },
 
   methods: {
     playAudio() {
       let lecteur = document.querySelector("#lecteur");
-      this.defineSource();
 
-      if (this.isLive) {
-        this.startfrom = Math.abs(this.distance / 1000);
-        console.log(this.startfrom);
+      if (!this.isReading) {
+        this.defineSource();
+
+        if (this.isLive) {
+          this.startfrom = Math.abs(this.distance / 1000);
+        }
+
+        this.isReading = true;
+        document.querySelector(".liquid").classList.add("isReading");
+
+        lecteur.currentTime = this.startfrom;
+        lecteur.play();
+      } else if (this.isReading && !this.isLive) {
+        this.isReading = false;
+        document.querySelector(".liquid").classList.remove("isReading");
+
+        lecteur.pause();
       }
-      lecteur.currentTime = this.startfrom;
-      lecteur.play();
     },
 
     stopAudio() {
       let lecteur = document.querySelector("#lecteur");
       lecteur.pause();
+
+      this.defineSource();
     },
 
     defineSource() {
@@ -83,15 +101,7 @@ export default {
         let fireStoreDate = this.liveEvent.fulldate.toDate();
         let fireStoreDateHour = fireStoreDate.getTime();
 
-        //console.log(fireStoreDateHour);
-
         let countDownDate = fireStoreDateHour;
-
-        //new Date("Apr 07, 2021 15:12:00").getTime();
-
-        //console.log(countDownDate);
-        //console.log(fireStoreDate);
-
         let currentTime = new Date();
         let distance = countDownDate - currentTime;
         this.distance = distance;
@@ -189,25 +199,13 @@ export default {
     console.log(this.liveEvent);
     //getting info for audio from storage?
 
-    if (this.liveUser.storyline === "type-a") {
-      console.log("this should be Blackwell");
-      this.liveRef = storage.ref("first-test/Blackwell.wav");
-    }
-
-    if (this.liveUser.storyline === "type-b") {
-      console.log("this should be Pierce");
-      this.liveRef = storage.ref("first-test/Perce.wav");
-    }
-
     let storageRef = storage.ref("first-story/type-a/Mozart.mp3");
-
     let x = await storageRef.getDownloadURL().then(function (url) {
       return url;
     });
 
-    let y = await this.liveRef.getDownloadURL().then(function (url) {
-      return url;
-    });
+    console.log(this.liveUser.url);
+    let y = this.liveUser.url;
 
     this.liveURL = y;
     this.waitURL = x;

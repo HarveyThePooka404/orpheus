@@ -30,16 +30,17 @@
     <div class="right">
       <h1>Set up events</h1>
 
-      <div lass="wrapper-add-user">
+      <div class="wrapper-add-user">
         <h2>Add users</h2>
         <form id="form-add-user" @submit.prevent="addUser">
-          <input placeholder="Add an email" type="text" id="email" />
-          <select id="user-type">
-            <option selected="true" disabled="disabled">
+          <input placeholder="Add an email" type="text" id="email" required />
+          <select id="user-type" v-if="userload" required>
+            <!--             <option value="" selected="true" disabled="disabled">
               Choose a character type
+            </option> -->
+            <option v-for="type in usersType" v-bind:key="type">
+              {{ type.name }}
             </option>
-            <option value="type-a">Type A</option>
-            <option value="type-b">Type B</option>
           </select>
           <input id="add-user" type="submit" value="Add User" />
         </form>
@@ -49,14 +50,17 @@
         <h2>Registered users</h2>
         <ul>
           <li v-for="user in users" :key="user.mail" class="existingUsers">
-            <router-link
-              class="try-url"
-              :to="{ path: `/events/${firestoreId}/${user.mail}` }"
-            >
-              {{ user.mail }}</router-link
-            >
+            <span class="user-mail">{{ user.mail }}</span>
 
-            <span class="user-type"> {{ user.storyline }} </span>
+            <span class="user-type">
+              {{ user.storyline }} -
+              <router-link
+                class="try-url"
+                :to="{ path: `/events/${firestoreId}/${user.mail}` }"
+                >url
+              </router-link>
+            </span>
+
             <img
               src="../assets/images/bin.png"
               alt="delete user icon"
@@ -88,6 +92,7 @@ export default {
       events: computed(() => store.getters.getEvents),
       users: computed(() => store.getters.getUsers),
       firestoreId: computed(() => store.getters.getFirestoreId),
+      usersType: computed(() => store.getters.getUsersType),
     };
   },
 
@@ -95,18 +100,29 @@ export default {
     this.$store.commit("changeCurrentModule", "Users");
     await this.$store.dispatch("bindEventsfromFirestore");
     this.data = true;
-    console.log(this.$store.getters.getCurrentModule);
   },
 
   methods: {
     async addUser() {
       let mail = document.querySelector("#email").value;
       let storyline = document.querySelector("#user-type").value;
+
+      let url = "";
+
+      this.usersType.forEach((type) => {
+        if (type.name === storyline) {
+          url = type.url;
+        }
+      });
+
+      console.log(url);
+
       (this.userload = false),
         await this.$store.dispatch("addUsertoFirestore", {
           firestoreId: this.firestoreId,
           mail: mail,
           storyline: storyline,
+          url: url,
         });
 
       this.userload = true;
@@ -157,8 +173,22 @@ export default {
 
         clickedEvent.classList.add("active");
         await this.$store.dispatch("bindUsersfromFirestore", clickedId);
-        console.log(this.firestoreId);
-        this.userload = true;
+
+        let activeEvent = "";
+
+        this.events.forEach((event) => {
+          if (event.id === this.firestoreId) {
+            activeEvent = event.titleEvent;
+          }
+        });
+
+        await this.$store.getters.getStories.forEach((story) => {
+          if (story.title === activeEvent) {
+            this.$store.dispatch("bindUsersTypefromFirestore", story.id);
+          }
+        });
+
+        setTimeout(() => (this.userload = true), 250);
       }
     },
   },
@@ -315,6 +345,7 @@ li {
   margin: 0;
   bottom: 0;
   width: 100%;
+  display: inline;
 }
 
 .try-url:hover {
@@ -324,6 +355,7 @@ li {
 }
 .user-type {
   grid-area: 2 / 1;
+  font-style: italic;
 }
 
 #email {
@@ -354,5 +386,9 @@ li {
 
 .upcomingEvent {
   max-height: 200px;
+}
+
+.user-mail {
+  text-transform: uppercase;
 }
 </style>
