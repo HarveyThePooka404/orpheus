@@ -12,53 +12,45 @@
       </div>
     </form>
 
-    <button id="buttonSubmitStory" @click="createStory">Create story</button>
+    <button class="button-class" id="buttonSubmitStory" @click="createStory">
+      Create story
+    </button>
   </div>
 </template>
 
 <script>
-import "vue-js-modal/dist/styles.css";
+  import "vue-js-modal/dist/styles.css";
 
-export default {
-  name: "createStory",
+  export default {
+    name: "createStory",
 
-  methods: {
-    async createStory() {
-      this.$store.commit("changeDataStatus", false);
-      console.log("called");
-      await this.$store.dispatch(
-        "addStorytoFirestore",
-        document.querySelector("#name-story").value
-      );
+    methods: {
+      async createStory() {
+        this.$store.commit("changeDataStatus", false);
+        console.log("called");
+        await this.$store.dispatch(
+          "addStorytoFirestore",
+          document.querySelector("#name-story").value
+        );
 
-      this.$store.commit("changeDataStatus", true);
+        this.$store.commit("changeDataStatus", true);
+      },
     },
-  },
-};
+  };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="css">
-#createStory {
-  display: flex;
-  flex-flow: column;
-}
+  #createStory {
+    display: flex;
+    flex-flow: column;
+  }
 
-label,
-.labelInput {
-  display: flex;
-  flex-flow: column;
-  margin: 0.5em 0;
-}
+  label,
+  .labelInput {
+    display: flex;
+    flex-flow: column;
+    margin: 0.5em 0;
+  }
 
-#buttonSubmitStory {
-  color: white;
-  background-color: #051029;
-
-  border: none;
-  margin: 20px 0;
-  font-size: 1.2em;
-  padding: 0.5em;
-  cursor: pointer;
-}
 </style>

@@ -1,8 +1,6 @@
 :root {
-    --primary-background:  #2D112C;
-    --dark-orange:  #ac3916;
+    --primary-background: ;
     --bright-orange: #314775;
-    
 
     --orpheus-font: "Canter", sans-serif;
     --body-font: "Lato", serif;
@@ -106,4 +104,23 @@ margin:0;
     100% {
       transform: translate(-50%, -75%) rotate(360deg);
     }
+  }
+
+  .button-class {
+    cursor: pointer;
+    color: white;
+    background-color: #051029;
+    border: none;
+    font-family: Lato;
+    padding: 0.75em;
+    margin-top: 25px;
+    border-radius: 5px;
+    font-size: 1.1em;
+  }
+
+  .button-class:hover {
+    color: #051029;
+    background-color: white;
+    border: solid 1px #051029;
+    font-weight: bold;
   }
